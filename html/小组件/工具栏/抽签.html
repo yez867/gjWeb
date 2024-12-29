@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>抽签游戏</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .container {
+            background: white;
+            padding: 115px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px 6px rgba(0,0,0,0.1);
+            width: 280px;
+			height: 390px;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+        #drawResult, #diceResult {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 4px;
+        }
+		audio {
+		    display: none;
+		  }
+    </style>
+</head>
+<body>
+	<audio id="yy" autoplay="autoplay" controls="controls" loop="loop" preload="auto" src="../../../music/Near%20Light.mp3"></audio>
+	
+	
+    <div class="container">
+		<button onclick="togglePlayPause();" style="background-color: white; color: #000000; text-align: end; border: none;">🎵音乐</button>
+        <h1>抽签和摇骰子游戏</h1>
+        <input type="text" id="nameInput" placeholder="输入名字">
+        <button onclick="addName()">Add Name</button>
+        <ul id="nameList"></ul>
+        <button onclick="drawName()">抽签</button>
+        <div id="drawResult"></div>
+        <button onclick="rollDice()">摇骰子</button>
+        <div id="diceResult"></div>
+		<a href="../../../index.html" style="color: white; text-decoration: none;"><button>返回主页</button></a>
+		
+    </div>
+    <script>
+        let names = [];
+        function addName() {
+            const input = document.getElementById('nameInput');
+            const name = input.value.trim();
+            if (name) {
+                names.push(name);
+                const list = document.getElementById('nameList');
+                const item = document.createElement('li');
+                item.textContent = name;
+                list.appendChild(item);
+                input.value = '';
+            } else {
+                alert("请输入名字！");
+            }
+        }
+        function drawName() {
+            if (names.length) {
+                const index = Math.floor(Math.random() * names.length);
+                const result = document.getElementById('drawResult');
+                result.textContent = `抽中的名字是：${names[index]}`;
+                result.style.color = 'red';
+                names.splice(index, 1);
+            } else {
+                alert("抽签列表为空！");
+            }
+        }
+        function rollDice() {
+            const result = document.getElementById('diceResult');
+            const dice = Math.floor(Math.random() * 6) + 1;
+            result.textContent = `摇骰子结果：${dice}`;
+            result.style.color = 'blue';
+        }
+		function togglePlayPause() {
+		    var audio = document.getElementById('yy');
+		    if (audio.paused) {
+		        audio.play();
+		    } else {
+		        audio.pause();
+		    }
+		}
+    </script>
+</body>
+</html>

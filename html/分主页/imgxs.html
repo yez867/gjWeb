@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="../../css/imgfz.css"/>
+	</head>
+	<body >
+		<div class="slider-container">
+		  <div class="slider-content">
+		    <div class="slide"><img src="../../img/blue.jpg"width="400"height="200"></div>
+		    <div class="slide"><img src="../../img/yellow.jpg"width="400"height="200 " ></div>
+		    <div class="slide"><img src="../../img/green.jpg"width="400"height="200 " ></div>
+		    <div class="slide"><img src="../../img/pink.jpg"width="400"height="200 " ></div>
+		    <div class="slide"><img src="../../img/purple.jpg"width="400"height="200 " ></div>
+		    <div class="slide"><img src="../../img/red.jpg"width="400"height="200 " ></div>
+			<div class="slide"><img src="../../img/blue.jpg"width="400"height="200"></div>
+			<div class="slide"><img src="../../img/yellow.jpg"width="400"height="200 " ></div>
+			<div class="slide"><img src="../../img/green.jpg"width="400"height="200 " ></div>
+			<div class="slide"><img src="../../img/pink.jpg"width="400"height="200 " ></div>
+			<div class="slide"><img src="../../img/purple.jpg"width="400"height="200 " ></div>
+			<div class="slide"><img src="../../img/red.jpg"width="400"height="200 " ></div>
+			<div class="slide"><img src="../../img/blue.jpg"width="400"height="200"></div>
+			<div class="slide"><img src="../../img/yellow.jpg"width="400"height="200 " ></div>
+			<div class="slide"><img src="../../img/green.jpg"width="400"height="200 " ></div>
+			<div class="slide"><img src="../../img/pink.jpg"width="400"height="200 " ></div>
+			<div class="slide"><img src="../../img/purple.jpg"width="400"height="200 " ></div>
+			<div class="slide"><img src="../../img/red.jpg"width="400"height="200 " ></div>
+			<div class="slide"><img src="../../img/blue.jpg"width="400"height="200"></div>
+			<div class="slide"><img src="../../img/yellow.jpg"width="400"height="200 " ></div>
+			<div class="slide"><img src="../../img/green.jpg"width="400"height="200 " ></div>
+			<div class="slide"><img src="../../img/pink.jpg"width="400"height="200 " ></div>
+			<div class="slide"><img src="../../img/purple.jpg"width="400"height="200 " ></div>
+			<div class="slide"><img src="../../img/red.jpg"width="400"height="200 " ></div>
+			<div class="slide"><img src="../../img/blue.jpg"width="400"height="200"></div>
+			<div class="slide"><img src="../../img/yellow.jpg"width="400"height="200 " ></div>
+			<div class="slide"><img src="../../img/green.jpg"width="400"height="200 " ></div>
+			<div class="slide"><img src="../../img/pink.jpg"width="400"height="200 " ></div>
+			<div class="slide"><img src="../../img/purple.jpg"width="400"height="200 " ></div>
+			<div class="slide"><img src="../../img/red.jpg"width="400"height="200 " ></div>
+			<div class="slide"><img src="../../img/blue.jpg"width="400"height="200"></div>
+			<div class="slide"><img src="../../img/yellow.jpg"width="400"height="200 " ></div>
+			<div class="slide"><img src="../../img/green.jpg"width="400"height="200 " ></div>
+			<div class="slide"><img src="../../img/pink.jpg"width="400"height="200 " ></div>
+			<div class="slide"><img src="../../img/purple.jpg"width="400"height="200 " ></div>
+			<div class="slide"><img src="../../img/red.jpg"width="400"height="200 " ></div>
+		  </div>
+		</div>
+		
+		<script>
+		document.addEventListener('DOMContentLoaded', function() {
+		    let currentIndex = 0;
+		    const slides = document.querySelectorAll('.slide');
+		    const totalSlides = slides.length;
+		    const slideWidth = document.querySelector('.slide').clientWidth;
+		    const autoPlayInterval = 2300;
+		    let autoPlayTimer;
+		
+		    function moveSlider(direction) {
+		        currentIndex += direction;
+		
+		        if (currentIndex < 0) {
+		            currentIndex = totalSlides - 1;
+		        } else if (currentIndex >= totalSlides) {
+		            currentIndex = 0;
+		        }
+		
+		        console.log('Moving to slide:', currentIndex + 1);
+		        document.querySelector('.slider-content').style.transform = `translateX(${-currentIndex * slideWidth}px)`;
+		    }
+		
+		    function startAutoPlay() {
+		        autoPlayTimer = setInterval(() => {
+		            moveSlider(1); 
+		        }, autoPlayInterval);
+		    }
+		
+		    function stopAutoPlay() {
+		        clearInterval(autoPlayTimer);
+		    }
+		
+		    startAutoPlay(); 
+		
+		    document.querySelector('.slider-container').addEventListener('mouseenter', stopAutoPlay);
+		    document.querySelector('.slider-container').addEventListener('mouseleave', startAutoPlay);
+		});
+;
+		</script>
+
+	</body>
+</html>

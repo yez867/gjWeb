@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta charset="utf-8"name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>年龄计算机</title>
+	<link rel="stylesheet" type="text/css" href="../../../css/zsy.css"/>
+  </head>
+  <style>
+  .bk{
+    box-shadow:10px 10px 10px #000000;
+    height:300px;
+    width:625px;
+    position:absolute;
+    top:25%;
+    left:30%;
+    border-radius:15px;
+    border-width:1px;
+    border-color:#cacaca;
+    border-style:solid;
+    }
+	
+  .in{
+    position:absolute;
+    top:35%;
+    left:18%;
+    height:6vw;
+    font-size:30px;
+    border-radius:6px;
+    border-color:#eeeeee;
+    transition-duration:0.55s;
+    box-shadow:1px 1px 2px #000000;
+    }
+	
+  .in:hover{
+    border-color:#000000;
+    transform:scale(1.15);
+    box-shadow:10px 10px 10px #000000;
+    }
+	
+ .bt{
+   position:absolute;
+   top:77%;
+   left:20%;
+   width:115px;
+   height:45px;
+   background-color:white;
+   border-radius:10px;
+   box-shadow:10px 10px 8px #000000;
+   border-color:#cacaca;
+   transition-duration:0.5s;
+   }
+
+  .bt:hover{
+    background-color:#cacaca;
+    color:white;
+    box-shadow:3px 3px 8px #000000;
+    transform:scale(0.90);
+    }
+	
+  .hs{
+    position:absolute;
+    top:15%;
+    left:20%;
+    }
+	
+	a{
+		text-decoration: none;
+	}
+	
+	audio {
+	    display: none;
+	  }
+  </style>
+  <body style="background-color: #f2fdff;">	
+  
+  <audio id="yy" autoplay="autoplay" controls="controls" loop="loop" preload="auto" src="../../../music/your.mp3"></audio>
+  
+  <div class="bk"style="background-color: #ffffff;">
+	<input id="in1" class="in" placeholder="输入你的出生日期" type="text"/>
+ <button onclick="b1()" class="bt">确定</button>
+ <a href="../../../index.html" style="color: #000000;;">
+		<button onclick="b1()" class="bt" style="left: 45%;">
+		<img src="../../../img/主页标识.png" width="30">
+		<small><sup>返回主页</sup></small>
+	</button>
+</a>
+<button onclick="togglePlayPause();" style="background-color: white; color: #000000; text-align: end; border: none; border-radius: 100px">🎵音乐</button>
+
+ <h3 id="hs" class="hs">点击确定查看结果&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h3>
+ </div>
+ <script>
+ function b1(){
+      var b = document.getElementById("in1").value;
+      var o = 0;
+      var p = document.getElementById("hs");
+var k = setInterval(()=>{
+  o ++;
+  p.innerHTML = "计算中" + o + "%";
+  if(o >= 100){
+  p.innerHTML = "你现在是" + b + "岁！🎉";
+  clearInterval(k)
+  }
+},35)
+ }
+ 
+ function togglePlayPause() {
+     var audio = document.getElementById('yy');
+     if (audio.paused) {
+         audio.play();
+     } else {
+         audio.pause();
+     }
+ }
+ </script>
+  </body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>随机文案</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+        }
+        .quote {
+            font-size: 18px;
+            margin-bottom: 20px;
+            min-height: 50px;
+        }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+		audio {
+		    display: none;
+		  }
+    </style>
+</head>
+<body>
+		<audio autoplay="autoplay" controls="controls" loop="loop" preload="auto" src="../../../music/Near%20Light.mp3"></audio>
+		
+    <div class="card">
+        <p id="quoteText" class="quote">点击按钮获取随机文案</p>
+        <button onclick="getRandomQuote()">获取随机文案</button>
+		<a href="../../../index.html"style="color: white; text-decoration: none;"><button>返回主页</button></a>
+    </div>
+    <script>
+        const quotes = [
+			"六星街里还传来，八扬琴声吗",
+			"我是毒液，我是毒液，我是最强毒液",
+			"小朋友们你们好啊，我是贝利亚我要来破坏地球了",
+        ];
+
+        function getRandomQuote() {
+            const quoteText = document.getElementById('quoteText');
+            const randomIndex = Math.floor(Math.random() * quotes.length);
+            quoteText.textContent = quotes[randomIndex];
+        }
+		
+    </script>
+	
+</body>
+</html>

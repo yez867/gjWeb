@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>WebCat</title>
+<style>
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #2E3A46;
+  color: white;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  width: 100%;
+  text-align: center;
+  position: relative;
+  cursor: pointer; /* 添加指针样式 */
+}
+h1::after {
+  content: "?"; 
+  position: absolute;
+  color: #ccc;
+  right: 10px;
+}
+img {
+  position: fixed;
+  top: 15%;
+  width: 80%;
+  opacity: 0;
+  z-index: -1;
+  border-radius: 20px;
+  transition: opacity 0.5s ease, z-index 0.5s ease, transform 0.5s ease;
+}
+img.visible {
+  opacity: 1;
+  z-index: 1;
+  transform: scale(1); /* 可选的缩放动画 */
+}
+</style>
+</head>
+<body>
+
+<h1 id="header">Hello world</h1>
+<img src="qq.png" alt="Image" class="hidden">
+
+<script>
+function toggleVisibility(element) {
+  element.classList.toggle('hidden');
+  element.classList.toggle('visible');
+}
+
+document.getElementById('header').addEventListener('click', function() {
+  toggleVisibility(document.querySelector('img'));
+});
+
+document.querySelector('img').addEventListener('click', function(event) {
+  event.preventDefault();
+  toggleVisibility(this);
+});
+</script>
+
+</body>
+</html>

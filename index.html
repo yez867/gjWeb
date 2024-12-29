@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+    <head>
+		<!-- height width -->
+        <meta charset="UTF-8">
+        <title>工具箱(长期)</title>
+    </head>
+    <!-- 内部样式定义 -->
+    <style>
+        body {
+            margin: 0; /* 设置字体 */
+            font-family: '楷体', sans-serif;
+        }
+
+        .navbar {
+            background-color: #d6ecf0; /* 导航栏颜色 */
+            overflow: hidden;
+        }
+
+        .responsive-iframe {
+            position: relative; /* 视窗样式 */
+            width: 100%; 
+            border: none; 
+            height: 825px;
+            border-radius: 15px;
+        }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: #363636;
+            text-align: center; /* 导航栏链接样式 */
+            padding: 14px 20px;
+            text-decoration: none;
+            font-size: 17px;
+            transition: background-color 0.2s;
+        }
+
+        .navbar a:hover {
+            background-color: #ddd; /* 鼠标悬停时的导航栏链接样式 */
+            color: black;
+        }
+
+        .content {
+            display: none;
+            padding: 4%;
+            height: 871px; /* 内容区域样式 */
+            margin-top: 0px;
+            animation-name: fadeIn;
+            animation-duration: 0.3s;
+            background-color: #f2fdff;
+        }
+
+        .content.active {
+            display: block; /* 激活内容区域的样式 */
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }  
+
+        @media screen and (max-width: 600px) {
+            .navbar a {
+                float: none;
+                display: block;
+                text-align: left; /* 响应式导航栏样式 */
+            }
+        }
+        
+        #head{
+            position: fixed;
+            top: 0px;
+            width: 100%;
+            opacity: 0.95;
+            float: left;
+        }
+        
+        a{
+            text-decoration: none;
+            color: #76C7C0;
+        }
+        
+        h2{
+            text-align: center;
+        }
+        
+        table{
+            height: 100%;
+        }
+        
+        li{
+            margin-bottom: 10px;
+        }
+        
+        #time{
+            margin: -459px -25px;
+            float: right;
+        }
+        
+        .hover-text {
+          font-size: 19px;
+          transition: font-size 0.4s;
+        }
+        
+        .hover-text:hover {
+          font-size: 24px;
+        }
+        
+        audio {
+            display: none;
+        }
+        
+        button {
+            border: none;
+			background-color: #f2fdff;
+			color: #000000; 
+			text-align: end;
+			float: right;
+			margin: -100px 173px;
+        }
+    </style>
+    <body>
+        <!-- 背景音乐 -->
+        <audio id="yy" autoplay="autoplay" controls="controls" loop="loop" preload="auto" src="music/lotus.mp3"></audio>
+        <!-- 导航栏 -->
+<div class="navbar" id="head">
+	<a href="#myself">🥳我的</a>
+    <a href="#home" class="active">⛅首页</a>
+    <a href="#sc">💖收藏</a>
+	<a href="#about">📧关于我们</a>
+</div>
+
+<div id="myself" class="content">
+	<iframe src="html/分主页/登录页面.html" class="responsive-iframe"></iframe>
+</div>
+
+
+<div id="home" class="content active">
+	<div class="table-container" style="margin: 0px auto;">
+    <table cellspacing="0"class="table">
+	<tr style="height: 50%; width: 250px;">
+		<th colspan="10">
+				<iframe src="html/分主页/imgxs.html" style="border: none;" width="100%" height="250"></iframe>
+				<!-- <iframe src="html/分主页/华为太空人表盘/index.html" id="time" style="border: none; width: 665px; height: 693px;"></iframe> -->
+				<hr style="size: 1;">
+		</th>
+		
+	</tr>
+
+	<tr>
+			<td>
+			<h2>工具列表🧾</h2>
+			<ul type="square">
+				<li class="hover-text"><a href="html/小组件/工具栏/搜索.html">📌搜索列单</a></li>
+				<li class="hover-text"><a href="html/小组件/工具栏/年龄计算.html">🧮年龄计算</a></li>
+				<li class="hover-text"><a href="html/小组件/工具栏/抽签.html">📇抽签</a></li>
+				<li class="hover-text"><a href="html/小组件/工具栏/文案.html">📓文案</a></li>
+			</ul>
+		</td>
+		
+		<td>
+			<h2>小游戏</h2>
+			<ul type="circle">
+				<li class="hover-text"><a href="html/小组件/小游戏/猜数字.html">🔀猜数字</a></li>
+				<li class="hover-text"><a href="html/小组件/小游戏/卡罗牌(外援).html">🔮卡罗牌</a></li>
+				<li class="hover-text"><a href="html/小组件/小游戏/lz.html">✨鼠标拖尾纵享版</a></li>
+			</ul>
+		</td>
+		
+		<td>
+			<h2>实用小工具</h2>
+			<ol type="1">
+				<li class="hover-text">
+					<a href="http://myfreemp3.sharerj.com/">🎶音频获取</a>
+				</li>
+				<li class="hover-text">
+					<a href="https://snapany.com/zh/bilibili">🎥视频解析</a>
+				</li>
+				<li class="hover-text">
+					<a href="https://www.jyshare.com/imglibs/">🔧菜鸟工具</a>
+				</li>
+			</ol>
+		</td>
+		
+		<td> 
+			<h2>跳转🔗</h2>
+			<ol type="a">
+				<li class="hover-text">
+					<a href="https://www.chaoxing.com/">📚学习通</a>
+				</li>
+				<li class="hover-text">
+					<a href="https://www.bilibili.com/">📺bilbil</a>
+				</li>
+				<li class="hover-text">
+					<a href="https://www.douyin.com/">🎼抖音</a>
+				</li>
+			</ol>
+		</td> 
+		<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+		<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+		<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+		<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="html/小组件/小游戏/舍长传/yin.html" style="color: #f2fdff;"target="_blank">看不到我</a></td>
+		<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+		<td><button onclick="togglePlayPause();">🔊音乐</button></td>
+	</tr>
+	</table>
+</div>
+</div>
+
+<div id="sc" class="content">
+	<h2 class="hover-text">还没做呢</h2>
+	<p>不会写&nbsp;&nbsp;(自己常用的小工具)</p>
+	<hr size="1">
+	<ol type="1">
+		<li class="hover-text">
+			<a href="http://myfreemp3.sharerj.com/">🎶音频获取</a>
+		</li>
+		<li class="hover-text">
+			<a href="https://snapany.com/zh/bilibili">🎥视频解析</a>
+		</li>
+		<li class="hover-text">
+			<a href="https://www.jyshare.com/imglibs/">🔧菜鸟工具</a>
+		</li>
+	</ol>
+</div>
+
+<div id="about" class="content">
+	<h2 class="hover-text" style="text-align: left;">关于我们<a href="mailto:18923752026@163.com" style="color: black;">📩</a></h2>
+    <p>
+	  <a>本网站由&nbsp;<cite style="color: lightskyblue;">智谱轻言AI</cite>&nbsp;赞助播出💬</a>
+	  <sub><i>&nbsp;&nbsp;&nbsp;&nbsp;试着将鼠标向下滑两下吧</i></sub>
+	  <b><a href="html/小组件/小游戏/格子点(外援)/index.html"style="color:#f2fdff;" class="hover-text"target="_blank">小彩蛋/a></b>
+	</p>
+	<iframe src="html/小组件/小游戏/lz.html"class="responsive-iframe" style="height: 675px;" ></iframe>
+	<div style="background-color: #ebf5f5; border-radius: 8px">
+		<blockquote style="text-align: center; color: grey;">🔔版权所有&nbsp;&copy;Yez&nbsp;2024/10/20</blockquote>
+	</div>
+</div>
+
+<script>
+    // 获取所有的导航链接和内容区域
+    var navLinks = document.querySelectorAll('.navbar a'); // 选择类名为'navbar'下的所有<a>标签
+    var contents = document.querySelectorAll('.content'); // 选择所有类名为'content'的元素
+
+    // 为每个导航链接添加点击事件监听器
+    navLinks.forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            // 阻止链接的默认行为（例如跳转）
+            e.preventDefault();
+
+            // 移除所有内容区域的激活状态
+            contents.forEach(function(content) {
+                content.classList.remove('active');
+            });
+            // 移除所有导航链接的激活状态
+            navLinks.forEach(function(link) {
+                link.classList.remove('active');
+            });
+            // 添加激活状态到当前点击的链接和对应的内容区域
+            e.target.classList.add('active'); // 为点击的链接添加'active'类
+            // 获取链接的'href'属性值，并去除开头的'#'，然后找到对应ID的内容区域并添加'active'类
+            document.getElementById(e.target.getAttribute('href').slice(1)).classList.add('active');
+        });
+    });
+	
+	// 控制音频播放和暂停的函数
+	function togglePlayPause() {
+	    var audio = document.getElementById('yy'); // 获取ID为'yy'的音频元素
+	    if (audio.paused) { // 如果音频是暂停状态
+	        audio.play(); // 播放音频
+	    } else {
+	        audio.pause(); // 如果音频正在播放，则暂停
+	    }
+	}
+</script>
+
+<script>
+(function() {
+    var script = document.createElement('script');
+    script.src = '//' + (location.host || 'localhost').split(':')[0] + ':35929/livereload.js?snipver=1';
+    document.head.appendChild(script);
+})();
+</script>
+
+<script>
+document.addEventListener('LiveReloadDisconnect', function() {
+    setTimeout(function() {
+        window.location.reload();
+    }, 500);
+});
+</script>
+
+</body>
+</html>

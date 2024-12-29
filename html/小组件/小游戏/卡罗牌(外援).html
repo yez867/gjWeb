@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>塔罗牌</title>
+    <style>
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        
+        .tarot-container {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+        }
+        
+        .draw-button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .draw-button:hover {
+            background-color: #45a049;
+        }
+
+        .question-input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .tarot-card {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+		audio {
+		    display: none;
+		  }
+    </style>
+</head>
+<body>
+	<audio id="yy" autoplay="autoplay" controls="controls" loop="loop" preload="auto" src="../../../music/shootout.mp3"></audio>
+	
+    <div class="tarot-container">
+        <h2>塔罗牌</h2>
+        <input type="text" id="question" class="question-input" placeholder="请输入你的问题">
+        <button class="draw-button" onclick="drawCards()">抽取塔罗牌</button>
+		<a href="../../../index.html"><button class="draw-button" >返回</button></a>
+		<button onclick="togglePlayPause();" style="background-color: white; color: #000000; text-align: end; border: none;">🎵音乐</button>
+        <div id="tarotCards">
+            
+        </div>
+    </div>
+
+    <script>
+    
+        const tarotCardsData = [
+            { name: "愚者", meaning: "新的开始，冒险" },
+            { name: "魔术师", meaning: "行动的力量，创造力" },
+            { name: "女祭司", meaning: "直觉，神秘" },
+            { name: "女皇", meaning: "丰饶，母性" },
+            { name: "皇帝", meaning: "权威，控制" },
+            { name: "教皇", meaning: "智慧，指引" },
+            { name: "恋人", meaning: "爱情，选择" },
+            { name: "战车", meaning: "胜利，自律" },
+            { name: "力量", meaning: "勇气，力量" },
+            { name: "隐士", meaning: "内省，寻求" },
+            { name: "命运之轮", meaning: "命运，转变" },
+            { name: "正义", meaning: "公正，真理" },
+            { name: "倒吊人", meaning: "牺牲，新视角" },
+            { name: "死神", meaning: "结束，转变" },
+            { name: "节制", meaning: "平衡，耐心" },
+            { name: "恶魔", meaning: "束缚，物质主义" },
+            { name: "塔", meaning: "破坏，启示" },
+            { name: "星星", meaning: "希望，灵感" },
+            { name: "月亮", meaning: "不确定性，梦想" },
+            { name: "太阳", meaning: "成功，活力" },
+            { name: "审判", meaning: "重生，评估" },
+            { name: "世界", meaning: "完成，整合" },
+            { name: "权杖A", meaning: "新开始，能量" },
+            { name: "权杖2", meaning: "决定，计划" },
+            { name: "权杖3", meaning: "旅行，探索" },
+        ];
+
+        function drawCards() {
+            const question = document.getElementById('question').value;
+            if (!question) {
+                alert("请提出一个问题后再抽取塔罗牌。");
+                return;
+            }
+            const drawnCards = [];
+            for (let i = 0; i < 3; i++) {
+                const card = tarotCardsData[Math.floor(Math.random() * tarotCardsData.length)];
+                while (drawnCards.some(c => c.name === card.name)) {
+                    card = tarotCardsData[Math.floor(Math.random() * tarotCardsData.length)];
+                }
+                drawnCards.push(card);
+            }
+            displayCards(drawnCards);
+        }
+
+        function displayCards(cards) {
+            const cardsContainer = document.getElementById('tarotCards');
+            cardsContainer.innerHTML = ''; 
+            cards.forEach(card => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'tarot-card';
+                cardElement.innerHTML = `
+                    <p><strong>牌名：</strong>${card.name}</p>
+                    <p><strong>含义：</strong>${card.meaning}</p>
+                `;
+                cardsContainer.appendChild(cardElement);
+            });
+        }
+		
+		function togglePlayPause() {
+		    var audio = document.getElementById('yy');
+		    if (audio.paused) {
+		        audio.play();
+		    } else {
+		        audio.pause();
+		    }
+		}
+    </script>
+	
+</body>
+</html>

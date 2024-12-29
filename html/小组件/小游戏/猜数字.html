@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>猜数字</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+  }
+  #game {
+    text-align: center;
+  }
+  input, button {
+    padding: 10px;
+    margin: 5px;
+    font-size: 16px;
+  }
+  button {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+  }
+  button:hover {
+      background-color: #45a049;
+  }
+  audio {
+      display: none;
+    }
+</style>
+</head>
+<body>
+	<audio id="yy" autoplay="autoplay" controls="controls" loop="loop" preload="auto" src="../../../music/opening.mp3"></audio>
+  <div id="game">
+    <h2>猜数字游戏</h2>
+    <p>我已经想好了一个1到100之间的数字。</p>
+    <input type="number" id="guess" placeholder="输入你的猜测">
+    <button onclick="checkGuess()">猜</button>
+	<a href="../../../index.html" style="text-decoration: none; color: black;"target="_self"><button>返回</button></a>
+	<button onclick="togglePlayPause();" style="background-color: #f0f0f0; color: #000000; text-align: end; border: none;">🎵音乐</button>
+    <p id="feedback"></p>
+  </div>
+
+<script>
+  const secretNumber = Math.floor(Math.random() * 100) + 1;
+
+  function checkGuess() {
+    const guess = document.getElementById('guess').value;
+    
+    if (guess < secretNumber) {
+      document.getElementById('feedback').textContent = '太低了！再试一次。';
+    } else if (guess > secretNumber) {
+      document.getElementById('feedback').textContent = '太高了！再试一次。';
+    } else {
+      document.getElementById('feedback').textContent = `恭喜你！正确答案就是${secretNumber}。`;
+    }
+  }
+  
+  function togglePlayPause() {
+      var audio = document.getElementById('yy');
+      if (audio.paused) {
+          audio.play();
+      } else {
+          audio.pause();
+      }
+  }
+</script>
+</body>
+</html>

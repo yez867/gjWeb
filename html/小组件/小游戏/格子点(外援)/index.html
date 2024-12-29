@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="stylesheet" type="text/css" href="Host Style/style.css">
+<link rel="stylesheet" type="text/css" href="Animations/dhua.css">
+<title>WebCat</title>
+<style>
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #2E3A46;
+  color: white;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  width: 100%;
+  text-align: center;
+  position: relative;
+  -webkit-tap-highlight-color: transparent; 
+}
+h1::after {
+  content: "?"; 
+  position: absolute;
+  color: #ccc;
+  right: 10px;
+  font-size: 24px;
+}
+img {
+  position: fixed;
+  top: 15%;
+  width: 80%;
+  opacity: 0;
+  z-index: 1000;
+  border-radius: 20px;
+  transform: scale(0); 
+  transition: opacity 0.5s ease,transform 0.5s ease;
+}
+img.visible {
+  opacity: 1;
+  transform: scale(1); 
+}
+
+</style>
+</head>
+<body>
+
+<h1 id="header">格子生成</h1>
+<div class="grid-container"></div>
+
+<div class="controls">
+    <input type="number" id="columns" value="7" min="1" max="9">
+    <input type="number" id="rows" value="6" min="1" max="14">
+    <input type="number" id="column-gap" value="1" min="1" max="1" readonly>
+    <input type="number" id="cell-width" value="40" min="1" max="40" readonly>
+</div>
+
+<div class="buttons">
+  <button id="generateCode">显示代码</button>
+  <button id="resetLayout">重置网格</button>
+  <a href="../../../../index.html"><button>返回</button></a>
+</div>
+
+<div class="code-block close" id="codeBlock">
+  <div class="code-header">
+  
+    <svg class="svg" xmlns="">
+      <circle cx="8" cy="7.5" r="6" fill="#FF5F57"/>
+      <circle cx="25" cy="7.5" r="6" fill="#FFBC2D"/>
+      <circle cx="42" cy="7.5" r="6" fill="#27C93F"/>
+    </svg>
+
+    <button id="closeCode" class="close-button">×</button>
+    <button id="codybtn">Copy</button>
+    <button id="toggleCss">Css</button>
+    <button id="toggleHtml" class="active">Html</button>
+  </div>
+  <div class="code-content">
+    <textarea id="generatedCode" readonly></textarea>
+  </div>
+  
+</div>
+
+
+
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', () => {
+  const columnsInput = document.getElementById('columns');
+  const rowsInput = document.getElementById('rows');
+  const columnGapInput = document.getElementById('column-gap');
+  const cellWidthInput = document.getElementById('cell-width');
+  const generateCodeButton = document.getElementById('generateCode');
+  const resetLayoutButton = document.getElementById('resetLayout');
+  const gridContainer = document.querySelector('.grid-container');
+  const generatedCodeTextarea = document.getElementById('generatedCode');
+  const codeBlock = document.getElementById('codeBlock');
+  const closeCodeButton = document.getElementById('closeCode');
+  const toggleHtmlButton = document.getElementById('toggleHtml');
+  const toggleCssButton = document.getElementById('toggleCss');
+
+  // 初始化变量
+  let currentView = 'html';
+  let htmlCode = ''; 
+  let cssCode = ''; 
+  let isDragging = false;
+  let startCell = null; 
+  let endCell = null; 
+  let dragThreshold = 10;
+  let dragStartX = 0; 
+  let dragStartY = 0; 
+  let hasMoved = false;
+  let mergedCells = [];
+
+  /**
+   * 创建网格布局
+   * @param {number} columns - 列数
+   * @param {number} rows - 行数
+   * @param {number} columnGap - 列间距
+   * @param {number} cellWidth - 单元格宽度
+   */
+  function createGrid(columns, rows, columnGap, cellWidth) {
+    // 清空现有网格
+    gridContainer.innerHTML = '';
+    // 设置网格模板列和行
+    gridContainer.style.gridTemplateColumns = `repeat(${columns}, ${cellWidth}px)`;
+    gridContainer.style.gridTemplateRows = `repeat(${rows}, ${cellWidth}px)`; // 固定高度为宽度
+    // 设置列间距和行间距
+    gridContainer.style.gridColumnGap = `${columnGap}px`;
+    gridContainer.style.gridRowGap = `1px`; // 固定为1
+
+    // 创建每个网格项
+    for (let i = 0; i < columns * rows; i++) {
+      const gridItem = document.createElement('div');
+      gridItem.classList.add('grid-item');
+      gridItem.dataset.index = i; // 设置数据索引
+      gridContainer.appendChild(gridItem);
+    }
+  }
+
+  /**
+   * 生成HTML和CSS代码
+   */
+  function generateCode() {
+    // 初始化HTML和CSS代码字符串
+    htmlCode = '<div class="parent">\n';
+    cssCode = `.parent {\n  display: grid;\n  grid-template-columns: repeat(${columnsInput.value}, ${cellWidthInput.value}px);\n  grid-template-rows: repeat(${rowsInput.value}, ${cellWidthInput.value}px);\n  grid-column-gap: ${columnGapInput.value}px;\n  grid-row-gap: 1px;\n}\n`;
+    let counter = 1; // 用于生成唯一的类名
+
+    // 获取所有合并的单元格
+    const mergedCellsElements = document.querySelectorAll('.grid-item.merged');
+    // 获取所有激活的单元格
+    const activeCells = document.querySelectorAll('.grid-item.active');
+
+    // 处理合并的单元格
+    mergedCellsElements.forEach(cell => {
+      const rowStart = cell.dataset.rowStart;
+      const colStart = cell.dataset.colStart;
+      const rowSpan = cell.dataset.rowSpan;
+      const colSpan = cell.dataset.colSpan;
+      htmlCode += `  <div class="div${counter}"> </div>\n`;
+      cssCode += `.div${counter} { grid-area: ${rowStart} / ${colStart} / ${parseInt(rowStart) + parseInt(rowSpan)} / ${parseInt(colStart) + parseInt(colSpan)}; }\n`;
+      counter++;
+    });
+
+    // 处理激活的单元格
+    activeCells.forEach(cell => {
+      const index = parseInt(cell.dataset.index);
+      const columns = parseInt(columnsInput.value);
+      const colStart = (index % columns) + 1;
+      const rowStart = Math.floor(index / columns) + 1;
+      htmlCode += `  <div class="div${counter}"> </div>\n`;
+      cssCode += `.div${counter} { grid-area: ${rowStart} / ${colStart} / ${rowStart + 1} / ${colStart + 1}; }\n`;
+      counter++;
+    });
+
+    htmlCode += '</div>'; // 结束父容器的div
+
+    // 将生成的代码显示在文本区域中
+    // 这里分开显示HTML和CSS代码，用户可以选择查看哪一部分
+    generatedCodeTextarea.value = htmlCode + '\n\n' + cssCode;
+
+    // 显示代码块并触发打开动画
+    codeBlock.classList.remove('close'); // 移除关闭动画类
+    codeBlock.classList.add('active'); // 添加打开动画类
+    codeBlock.style.display = 'block'; // 确保显示
+    currentView = 'html';
+    toggleHtmlButton.classList.add('active');
+    toggleCssButton.classList.remove('active');
+
+    // 默认显示HTML代码
+    generatedCodeTextarea.value = htmlCode;
+  }
+
+  /**
+   * 重置网格布局
+   */
+  function resetGrid() {
+    // 重新创建网格
+    createGrid(columnsInput.value, rowsInput.value, columnGapInput.value, cellWidthInput.value);
+    // 清除所有激活和合并的格子
+    const activeCells = document.querySelectorAll('.grid-item.active, .grid-item.merged');
+    activeCells.forEach(cell => {
+      cell.classList.remove('active');
+      cell.classList.remove('merged');
+      delete cell.dataset.rowStart;
+      delete cell.dataset.colStart;
+      delete cell.dataset.rowSpan;
+      delete cell.dataset.colSpan;
+    });
+    // 仅在 codeBlock 处于打开状态时，触发关闭动画
+    if (codeBlock.classList.contains('active')) {
+      codeBlock.classList.remove('active'); // 移除打开动画类
+      codeBlock.classList.add('close'); // 添加关闭动画类
+      // 隐藏代码块
+      setTimeout(() => {
+        codeBlock.style.display = 'none';
+      }, 300); // 等待动画完成
+    }
+    mergedCells = []; // 清空已合并的单元格数组
+  }
+
+  // 绑定按钮点击事件
+  generateCodeButton.addEventListener('click', generateCode);
+  resetLayoutButton.addEventListener('click', resetGrid);
+
+  // 变量用于处理拖拽事件
+  let isMouseDown = false;
+
+  /**
+   * 处理点击事件（适用于非拖拽选择）
+   */
+  gridContainer.addEventListener('click', (e) => {
+    if (hasMoved) {
+      hasMoved = false; // 重置移动标志
+      return; // 如果是拖拽导致的点击，不处理
+    }
+    if (e.target.classList.contains('grid-item') && !e.target.classList.contains('merged')) {
+      e.target.classList.toggle('active'); // 切换激活状态
+    }
+  });
+
+  /**
+   * 处理触摸开始事件（移动端）
+   */
+  gridContainer.addEventListener('touchstart', (e) => {
+    if (e.target.classList.contains('grid-item') && !e.target.classList.contains('merged')) {
+      isDragging = true; // 标记开始拖拽
+      hasMoved = false;
+      const touch = e.touches[0];
+      dragStartX = touch.clientX;
+      dragStartY = touch.clientY;
+      const target = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (target && target.classList.contains('grid-item')) {
+        startCell = target; // 记录拖拽开始的单元格
+        clearSelectedForMerge(); // 清除之前的选中状态
+        target.classList.add('selected-for-merge'); // 标记选中用于合并
+      }
+    }
+  });
+
+  /**
+   * 处理触摸移动事件（移动端）
+   */
+  gridContainer.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    const touch = e.touches[0];
+    const deltaX = Math.abs(touch.clientX - dragStartX);
+    const deltaY = Math.abs(touch.clientY - dragStartY);
+    if (deltaX > dragThreshold || deltaY > dragThreshold) {
+      hasMoved = true; // 标记已移动
+    }
+    e.preventDefault(); // 防止页面滚动
+    const target = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (target && target.classList.contains('grid-item') && !target.classList.contains('merged')) {
+      if (endCell !== target) {
+        endCell = target; // 更新拖拽结束的单元格
+        selectCellsForMerge(startCell, endCell); // 选择需要合并的单元格
+      }
+    }
+  });
+
+  /**
+   * 处理触摸结束事件（移动端）
+   */
+  gridContainer.addEventListener('touchend', () => {
+    if (isDragging) {
+      isDragging = false; // 结束拖拽
+      mergeSelectedCells(); // 合并选中的单元格
+    }
+  });
+
+  /**
+   * 清除用于合并的选中状态
+   */
+  function clearSelectedForMerge() {
+    const selected = document.querySelectorAll('.grid-item.selected-for-merge');
+    selected.forEach(cell => cell.classList.remove('selected-for-merge'));
+  }
+
+  function selectCellsForMerge(start, end) {
+    const startIndex = parseInt(start.dataset.index);
+    const endIndex = parseInt(end.dataset.index);
+    const columns = parseInt(columnsInput.value);
+    const startRow = Math.floor(startIndex / columns) + 1;
+    const startCol = (startIndex % columns) + 1;
+    const endRow = Math.floor(endIndex / columns) + 1;
+    const endCol = (endIndex % columns) + 1;
+
+    const rowStart = Math.min(startRow, endRow);
+    const rowEnd = Math.max(startRow, endRow);
+    const colStart = Math.min(startCol, endCol);
+    const colEnd = Math.max(startCol, endCol);
+
+    // 清除之前的选中状态
+    clearSelectedForMerge();
+
+    // 点亮当前选择范围内的格子
+    for (let r = rowStart; r <= rowEnd; r++) {
+      for (let c = colStart; c <= colEnd; c++) {
+        const index = (r - 1) * columns + (c - 1);
+        const cell = gridContainer.querySelector(`.grid-item[data-index='${index}']`);
+        if (cell && !cell.classList.contains('merged')) {
+          cell.classList.add('selected-for-merge');
+        }
+      }
+    }
+  }
+
+  /**
+   * 合并选中的单元格
+   */
+  function mergeSelectedCells() {
+    const selectedForMerge = Array.from(document.querySelectorAll('.grid-item.selected-for-merge'));
+    if (selectedForMerge.length <= 1) {
+      clearSelectedForMerge(); // 如果选中单元格不够合并，清除选中状态
+      return;
+    }
+
+    const columns = parseInt(columnsInput.value);
+    const indices = selectedForMerge.map(cell => parseInt(cell.dataset.index));
+    const minIndex = Math.min(...indices);
+    const maxIndex = Math.max(...indices);
+
+    const startRow = Math.floor(minIndex / columns) + 1;
+    const startCol = (minIndex % columns) + 1;
+    const endRow = Math.floor(maxIndex / columns) + 1;
+    const endCol = (maxIndex % columns) + 1;
+
+    const rowSpan = endRow - startRow + 1;
+    const colSpan = endCol - startCol + 1;
+
+    // 创建一个新的合并格子
+    const mergedCell = document.createElement('div');
+    mergedCell.classList.add('grid-item', 'merged');
+    mergedCell.style.gridRowStart = startRow;
+    mergedCell.style.gridColumnStart = startCol;
+    mergedCell.style.gridRowEnd = startRow + rowSpan;
+    mergedCell.style.gridColumnEnd = startCol + colSpan;
+    mergedCell.dataset.rowStart = startRow;
+    mergedCell.dataset.colStart = startCol;
+    mergedCell.dataset.rowSpan = rowSpan;
+    mergedCell.dataset.colSpan = colSpan;
+
+    gridContainer.appendChild(mergedCell); // 添加合并后的单元格到网格容器
+
+    // 移除被合并的格子
+    selectedForMerge.forEach(cell => {
+      gridContainer.removeChild(cell);
+    });
+
+    mergedCells.push(mergedCell); // 将合并后的单元格加入已合并数组
+  }
+
+  /**
+   * 处理输入框的输入事件，确保值在限制范围内
+   */
+  function handleInputLimits() {
+    // 处理列数限制
+    if (parseInt(columnsInput.value) > 9) {
+      columnsInput.value = 9;
+    } else if (parseInt(columnsInput.value) < 1) {
+      columnsInput.value = 1;
+    }
+
+    // 处理行数限制
+    if (parseInt(rowsInput.value) > 14) {
+      rowsInput.value = 14;
+    } else if (parseInt(rowsInput.value) < 1) {
+      rowsInput.value = 1;
+    }
+  }
+
+  // 绑定输入框的事件，以确保输入值不超过限制
+  columnsInput.addEventListener('input', () => {
+    handleInputLimits();
+    resetGrid();
+  });
+  rowsInput.addEventListener('input', () => {
+    handleInputLimits();
+    resetGrid();
+  });
+  // columnGapInput 不可更改，不需要绑定事件
+  // cellWidthInput 不可更改，不需要绑定事件
+
+  /**
+   * 关闭代码块的按钮点击事件
+   */
+  closeCodeButton.addEventListener('click', () => {
+    // 触发关闭动画
+    codeBlock.classList.remove('active'); // 移除打开动画类
+    codeBlock.classList.add('close'); // 添加关闭动画类
+    // 隐藏代码块
+    setTimeout(() => {
+      codeBlock.style.display = 'none';
+    }, 300); // 等待动画完成
+  });
+
+  /**
+   * 监听关闭动画结束事件，确保在动画结束后移除 'close' 类
+   */
+  codeBlock.addEventListener('transitionend', (e) => {
+    if (e.propertyName === 'transform' && codeBlock.classList.contains('close')) {
+      codeBlock.classList.remove('close'); // 动画结束后移除 'close' 类
+      codeBlock.style.display = 'none'; // 隐藏代码块
+    }
+  });
+
+   // 切换到HTML视图的按钮点击事件
+   
+  toggleHtmlButton.addEventListener('click', () => {
+    if (currentView !== 'html') {
+      currentView = 'html';
+      // 触发动画
+      triggerCodeTransition(() => {
+        generatedCodeTextarea.value = htmlCode; // 显示HTML代码
+      });
+      toggleHtmlButton.classList.add('active');
+      toggleCssButton.classList.remove('active');
+    }
+  });
+
+  //切换到CSS视图的按钮点击事件
+
+  toggleCssButton.addEventListener('click', () => {
+    if (currentView !== 'css') {
+      currentView = 'css';
+      // 触发动画
+      triggerCodeTransition(() => {
+        generatedCodeTextarea.value = cssCode; // 显示CSS代码
+      });
+      toggleCssButton.classList.add('active');
+      toggleHtmlButton.classList.remove('active');
+    }
+  });
+
+  /**
+   * 复制生成的代码到剪贴板的功能
+   */
+  const copyButton = document.getElementById('codybtn');
+  copyButton.addEventListener('click', () => {
+    generatedCodeTextarea.select(); // 选择文本区域内容
+    document.execCommand('copy'); // 执行复制命令
+    // 添加复制成功的提示
+    copyButton.textContent = 'Copy';
+    setTimeout(() => {
+      copyButton.textContent = 'Copy';
+    }, 2000);
+  });
+
+  /**
+   * 触发代码内容的动画过渡
+   * @param {Function} callback - 动画完成后执行的回调函数
+   */
+  function triggerCodeTransition(callback) {
+    // 添加fade-out类以触发淡出动画
+    generatedCodeTextarea.classList.add('fade-out');
+
+    // 等待动画完成后执行回调
+    generatedCodeTextarea.addEventListener('transitionend', function handler() {
+      // 移除fade-out类
+      generatedCodeTextarea.classList.remove('fade-out');
+      // 添加fade-in类以触发淡入动画
+      generatedCodeTextarea.classList.add('fade-in');
+      // 执行回调函数更新内容
+      callback();
+      // 移除fade-in类以便下次动画可以触发
+      generatedCodeTextarea.classList.remove('fade-in');
+      // 移除事件监听器
+      generatedCodeTextarea.removeEventListener('transitionend', handler);
+    });
+  }
+
+  // 初始化网格布局
+  createGrid(columnsInput.value, rowsInput.value, columnGapInput.value, cellWidthInput.value);
+});
+
+
+// 这一段时h1点击显示img图片逻辑可留可删
+function toggleVisibility(element) {
+  element.classList.toggle('hidden');
+  element.classList.toggle('visible');
+}
+
+document.getElementById('header').addEventListener('click', function() {
+  toggleVisibility(document.querySelector('img'));
+});
+
+document.querySelector('img').addEventListener('click', function(event) {
+  event.preventDefault();
+  toggleVisibility(this);
+});
+</script>
+</body>
+</html>
+
+
+
